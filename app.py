@@ -8,12 +8,21 @@ from linebot.exceptions import (
 )
 from linebot.models import *
 
-app = Flask(__name__)
+#======python的函數庫==========
+import tempfile, os
+import datetime
+import openai
+import time
+import traceback
+#======python的函數庫==========
 
+app = Flask(__name__)
+static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
 # Channel Access Token
-line_bot_api = LineBotApi('2OFk5hVevR5sxfmB8GhaA43mBa1kcfGBctAImBrNrJjKkIgOUtWNn9aAvcFcXFL2/WXQsMTpzMdSOI1yf9jSrh2agPaKAJtVPa0J81s3GvOnIq4433KWgMqvp14OmoN8mCEhzcubRUf5Yaht2Ldk4QdB04t89/1O/w1cDnyilFU=')
+line_bot_api = LineBotApi(os.getenv('CHANNEL_ACCESS_TOKEN'))
 # Channel Secret
-handler = WebhookHandler('d06a621203ce355421ee3d45bf97a4e7')
+handler = WebhookHandler(os.getenv('CHANNEL_SECRET'))
+
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -29,6 +38,7 @@ def callback():
     except InvalidSignatureError:
         abort(400)
     return 'OK'
+
 
 # 處理訊息
 @handler.add(MessageEvent, message=TextMessage)
